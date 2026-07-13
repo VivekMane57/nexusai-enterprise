@@ -6,4 +6,3 @@ pytest-cov
 ruff
 mypy
 httpx
-
