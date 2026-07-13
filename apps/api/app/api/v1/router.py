@@ -1,6 +1,14 @@
 from fastapi import APIRouter
 
 from app.modules.auth.router import router as auth_router
+from app.modules.documents.router import (
+    documents_router,
+    knowledge_base_documents_router,
+)
+from app.modules.knowledge_bases.router import (
+    knowledge_bases_router,
+    project_knowledge_bases_router,
+)
 from app.modules.organizations.router import (
     router as organizations_router,
 )
@@ -16,10 +24,23 @@ api_v1_router = APIRouter()
 api_v1_router.include_router(auth_router)
 api_v1_router.include_router(users_router)
 api_v1_router.include_router(organizations_router)
+
 api_v1_router.include_router(
     organization_projects_router
 )
 api_v1_router.include_router(projects_router)
+
+api_v1_router.include_router(
+    project_knowledge_bases_router
+)
+api_v1_router.include_router(
+    knowledge_bases_router
+)
+
+api_v1_router.include_router(
+    knowledge_base_documents_router
+)
+api_v1_router.include_router(documents_router)
 
 
 @api_v1_router.get(

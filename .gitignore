@@ -45,8 +45,8 @@ logs/
 *.log
 
 # Uploaded documents and local storage
-uploads/
 storage/
+uploads/
 
 # ML artifacts and model weights
 ml/artifacts/*
