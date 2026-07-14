@@ -15,13 +15,13 @@ Environment = Literal[
 
 class Settings(BaseSettings):
     """
-    Central application configuration.
+    Central application configuration for NexusAI Enterprise.
 
-    Configuration values are loaded from:
+    Configuration values are loaded in this order:
     1. Operating-system environment variables
     2. apps/api/.env
     3. Repository root .env
-    4. Default values defined below
+    4. Defaults defined in this class
     """
 
     model_config = SettingsConfigDict(
@@ -66,7 +66,6 @@ class Settings(BaseSettings):
         "postgresql+psycopg2://"
         "nexusai:nexusai_dev_password@127.0.0.1:5433/nexusai"
     )
-
     database_pool_size: int = 5
     database_max_overflow: int = 10
     database_pool_timeout: int = 30
@@ -88,7 +87,25 @@ class Settings(BaseSettings):
     # Local document storage
     # =====================================================
     local_storage_path: str = "storage"
+    documents_storage_path: str = "storage/documents"
+    temporary_storage_path: str = "storage/temp"
+
     max_upload_size_mb: int = 20
+
+    allowed_document_extensions: list[str] = [
+        ".pdf",
+        ".docx",
+        ".txt",
+    ]
+
+    allowed_document_mime_types: list[str] = [
+        "application/pdf",
+        (
+            "application/vnd.openxmlformats-officedocument."
+            "wordprocessingml.document"
+        ),
+        "text/plain",
+    ]
 
     # =====================================================
     # Authentication
@@ -117,6 +134,19 @@ class Settings(BaseSettings):
         "cross-encoder/ms-marco-MiniLM-L-6-v2"
     )
 
+    embedding_batch_size: int = 16
+
+    # =====================================================
+    # RAG defaults
+    # =====================================================
+    default_chunk_size: int = 800
+    default_chunk_overlap: int = 120
+    dense_retrieval_top_k: int = 20
+    final_context_top_k: int = 6
+
+    # =====================================================
+    # Environment helpers
+    # =====================================================
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"
@@ -124,6 +154,10 @@ class Settings(BaseSettings):
     @property
     def is_development(self) -> bool:
         return self.app_env == "development"
+
+    @property
+    def is_testing(self) -> bool:
+        return self.app_env == "testing"
 
     @property
     def docs_url(self) -> str | None:
@@ -141,12 +175,15 @@ class Settings(BaseSettings):
             else "/openapi.json"
         )
 
+    # =====================================================
+    # Derived values
+    # =====================================================
     @property
     def max_upload_size_bytes(self) -> int:
         return self.max_upload_size_mb * 1024 * 1024
 
 
-@lru_cache
+@lru_cache(maxsize=1)
 def get_settings() -> Settings:
     """
     Return one cached Settings instance per application process.

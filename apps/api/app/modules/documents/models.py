@@ -1,11 +1,27 @@
 from uuid import UUID
 
-from sqlalchemy import BigInteger, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    BigInteger,
+    Enum,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
-from app.modules.documents.constants import DocumentStatus, DocumentType
+from app.db.base import (
+    Base,
+    TimestampMixin,
+    UUIDPrimaryKeyMixin,
+)
+from app.modules.documents.constants import (
+    DocumentStatus,
+    DocumentType,
+)
 
 
 class Document(
@@ -17,7 +33,10 @@ class Document(
 
     knowledge_base_id: Mapped[UUID] = mapped_column(
         PostgreSQLUUID(as_uuid=True),
-        ForeignKey("knowledge_bases.id", ondelete="CASCADE"),
+        ForeignKey(
+            "knowledge_bases.id",
+            ondelete="CASCADE",
+        ),
         nullable=False,
         index=True,
     )
@@ -94,7 +113,10 @@ class Document(
 
     uploaded_by: Mapped[UUID] = mapped_column(
         PostgreSQLUUID(as_uuid=True),
-        ForeignKey("users.id", ondelete="RESTRICT"),
+        ForeignKey(
+            "users.id",
+            ondelete="RESTRICT",
+        ),
         nullable=False,
         index=True,
     )
@@ -104,4 +126,102 @@ class Document(
         back_populates="documents",
     )
 
-    uploader = relationship("User")
+    uploader = relationship(
+        "User",
+    )
+
+    chunks = relationship(
+        "DocumentChunk",
+        back_populates="document",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
+
+class DocumentChunk(
+    UUIDPrimaryKeyMixin,
+    TimestampMixin,
+    Base,
+):
+    __tablename__ = "document_chunks"
+
+    document_id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        ForeignKey(
+            "documents.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    knowledge_base_id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        ForeignKey(
+            "knowledge_bases.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    chunk_index: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    content: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
+
+    character_count: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    token_count: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+    )
+
+    page_number: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+    )
+
+    start_offset: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+    )
+
+    end_offset: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+    )
+
+    qdrant_point_id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        nullable=False,
+        unique=True,
+        index=True,
+    )
+
+    chunk_metadata: Mapped[dict[str, object]] = mapped_column(
+        JSON,
+        default=dict,
+        nullable=False,
+    )
+
+    document = relationship(
+        "Document",
+        back_populates="chunks",
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "document_id",
+            "chunk_index",
+            name="uq_document_chunk_index",
+        ),
+    )

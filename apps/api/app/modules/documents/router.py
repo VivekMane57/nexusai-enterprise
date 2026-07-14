@@ -5,6 +5,7 @@ from fastapi import (
     APIRouter,
     Depends,
     File,
+    Response,
     UploadFile,
     status,
 )
@@ -35,6 +36,11 @@ documents_router = APIRouter(
     "/upload",
     response_model=DocumentUploadResponse,
     status_code=status.HTTP_201_CREATED,
+    summary="Upload Document",
+    description=(
+        "Upload a PDF, DOCX, or TXT document to a knowledge base. "
+        "The document is stored and queued for background indexing."
+    ),
 )
 async def upload_document(
     knowledge_base_id: UUID,
@@ -45,7 +51,13 @@ async def upload_document(
     ],
     file: UploadFile = File(...),
 ) -> DocumentUploadResponse:
-    service = DocumentService(database_session)
+    """
+    Store a document and enqueue its ingestion task.
+    """
+
+    service = DocumentService(
+        database_session
+    )
 
     document = await service.upload_document(
         knowledge_base_id=knowledge_base_id,
@@ -54,14 +66,25 @@ async def upload_document(
     )
 
     return DocumentUploadResponse(
-        message="Document uploaded successfully.",
-        document=DocumentResponse.model_validate(document),
+        message=(
+            "Document uploaded and processing queued "
+            "successfully."
+        ),
+        document=DocumentResponse.model_validate(
+            document
+        ),
     )
 
 
 @knowledge_base_documents_router.get(
     "",
     response_model=DocumentListResponse,
+    status_code=status.HTTP_200_OK,
+    summary="List Documents",
+    description=(
+        "List all documents belonging to the selected "
+        "knowledge base."
+    ),
 )
 def list_documents(
     knowledge_base_id: UUID,
@@ -71,7 +94,13 @@ def list_documents(
         Depends(get_db_session),
     ],
 ) -> DocumentListResponse:
-    service = DocumentService(database_session)
+    """
+    List documents for one knowledge base.
+    """
+
+    service = DocumentService(
+        database_session
+    )
 
     documents = service.list_documents(
         knowledge_base_id
@@ -79,8 +108,10 @@ def list_documents(
 
     return DocumentListResponse(
         items=[
-            DocumentResponse.model_validate(item)
-            for item in documents
+            DocumentResponse.model_validate(
+                document
+            )
+            for document in documents
         ],
         total=len(documents),
     )
@@ -89,6 +120,12 @@ def list_documents(
 @documents_router.get(
     "/{document_id}",
     response_model=DocumentResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get Document",
+    description=(
+        "Return document metadata, processing status, "
+        "page count, chunk count, and processing error."
+    ),
 )
 def get_document(
     document_id: UUID,
@@ -98,16 +135,69 @@ def get_document(
         Depends(get_db_session),
     ],
 ) -> DocumentResponse:
-    service = DocumentService(database_session)
+    """
+    Get one document and its current processing status.
+    """
 
-    document = service.get_document(document_id)
+    service = DocumentService(
+        database_session
+    )
 
-    return DocumentResponse.model_validate(document)
+    document = service.get_document(
+        document_id
+    )
+
+    return DocumentResponse.model_validate(
+        document
+    )
+
+
+@documents_router.post(
+    "/{document_id}/retry",
+    response_model=DocumentResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+    summary="Retry Document Processing",
+    description=(
+        "Reset a document to queued status and submit "
+        "its ingestion task to Celery again."
+    ),
+)
+def retry_document_processing(
+    document_id: UUID,
+    current_user: CurrentUser,
+    database_session: Annotated[
+        Session,
+        Depends(get_db_session),
+    ],
+) -> DocumentResponse:
+    """
+    Queue an existing document for ingestion again.
+    """
+
+    service = DocumentService(
+        database_session
+    )
+
+    document = (
+        service.retry_document_processing(
+            document_id
+        )
+    )
+
+    return DocumentResponse.model_validate(
+        document
+    )
 
 
 @documents_router.delete(
     "/{document_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete Document",
+    description=(
+        "Delete the stored file, PostgreSQL chunk records, "
+        "Qdrant vectors, and document metadata."
+    ),
+    response_class=Response,
 )
 def delete_document(
     document_id: UUID,
@@ -116,7 +206,19 @@ def delete_document(
         Session,
         Depends(get_db_session),
     ],
-) -> None:
-    service = DocumentService(database_session)
+) -> Response:
+    """
+    Delete a document and its associated data.
+    """
 
-    service.delete_document(document_id)
+    service = DocumentService(
+        database_session
+    )
+
+    service.delete_document(
+        document_id
+    )
+
+    return Response(
+        status_code=status.HTTP_204_NO_CONTENT
+    )

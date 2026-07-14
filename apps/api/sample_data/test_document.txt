@@ -1,0 +1,5 @@
+NexusAI Enterprise is an agentic AI platform.
+
+It supports document ingestion, hybrid retrieval, agent workflows, evaluation and monitoring.
+
+The ingestion pipeline extracts document text, creates overlapping chunks and stores embeddings inside Qdrant for semantic retrieval.
