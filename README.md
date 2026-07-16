@@ -485,7 +485,8 @@ sequenceDiagram
 
 | Chat with Grounded Citations | Knowledge Base Management |
 |:---:|:---:|
-| ![Grounded Chat](docs/screenshots/chat.png) | ![Knowledge Base](docs/screenshots/knowledge-base.png) |
+| ![Grounded Chat](docs/screenshots/chat.png) | <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/914b08e2-4a34-4f49-9e4b-11f9c0bedf6e" />
+ |
 
 | Evaluation Dashboard | Enterprise Agent Console |
 |:---:|:---:|
