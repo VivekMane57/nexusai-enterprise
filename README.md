@@ -483,14 +483,34 @@ sequenceDiagram
 
 <div align="center">
 
-| Chat with Grounded Citations | Knowledge Base Management |
-|:---:|:---:|
-| ![Grounded Chat](docs/screenshots/chat.png) | <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/914b08e2-4a34-4f49-9e4b-11f9c0bedf6e" />
+## Chat with Grounded Citations 
+ <img width="1571" height="911" alt="image" src="https://github.com/user-attachments/assets/ee285626-84cd-48e1-b450-a9e9a3a27edb" />
+ <img width="1526" height="900" alt="image" src="https://github.com/user-attachments/assets/44835019-32fb-42fd-bce6-02b66882139e" />
+
+## Knowledge Base Management 
+ <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/914b08e2-4a34-4f49-9e4b-11f9c0bedf6e" />
  |
 
-| Evaluation Dashboard | Enterprise Agent Console |
-|:---:|:---:|
-| ![Evaluation Dashboard](docs/screenshots/evaluation.png) | ![Agent Console](docs/screenshots/agents.png) |
+## Evaluation Dashboard 
+<img width="1918" height="982" alt="image" src="https://github.com/user-attachments/assets/48a283ea-97d5-43f9-8cbd-0d81a804d75c" />
+<img width="1918" height="1007" alt="image" src="https://github.com/user-attachments/assets/c33854a0-9908-48a5-a209-50ea06ce8595" />
+
+
+## Enterprise Agent Console 
+<img width="1918" height="1037" alt="image" src="https://github.com/user-attachments/assets/8adce558-2526-40da-9414-8400e9f1bf0f" />
+<img width="1918" height="1023" alt="image" src="https://github.com/user-attachments/assets/450f299f-bbdd-4d93-94f6-3b82422091a5" />
+<img width="1918" height="1030" alt="image" src="https://github.com/user-attachments/assets/7e90cfba-623e-498f-8778-d8402891d47b" />
+<img width="1301" height="847" alt="image" src="https://github.com/user-attachments/assets/e4ce56cd-bd3e-4805-896b-94db192b0e87" />
+<img width="1313" height="826" alt="image" src="https://github.com/user-attachments/assets/7fc31b3c-2163-4c6c-83d1-ee0d2c352d06" />
+<img width="1297" height="851" alt="image" src="https://github.com/user-attachments/assets/4f0cd563-2324-472f-922a-7ff26018be01" />
+<img width="1285" height="842" alt="image" src="https://github.com/user-attachments/assets/396a6aaf-9d38-40c9-8fb3-5a8ff6c2355f" />
+
+
+
+
+
+
+
 
 </div>
 
