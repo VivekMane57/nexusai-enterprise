@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f8fb;
+  --foreground: #101828;
+  --surface: #ffffff;
+  --surface-muted: #f2f4f7;
+  --border: #e4e7ec;
+  --primary: #6941c6;
+  --primary-hover: #53389e;
+  --primary-soft: #f4f3ff;
+  --muted: #667085;
+  --danger: #d92d20;
+  --success: #079455;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  min-height: 100%;
+  background: var(--background);
 }
 
 body {
-  background: var(--background);
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(105, 65, 198, 0.08),
+      transparent 30%
+    ),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    var(--font-geist-sans),
+    Arial,
+    Helvetica,
+    sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(105, 65, 198, 0.18);
+}
+
+.enterprise-grid {
+  background-image:
+    linear-gradient(
+      rgba(105, 65, 198, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(105, 65, 198, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 28px 28px;
 }

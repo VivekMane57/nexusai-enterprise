@@ -1,6 +1,7 @@
 from celery import Celery
 
 from app.core.config import settings
+from app.db import models as _models  # noqa: F401
 
 
 celery_app = Celery(
@@ -9,6 +10,8 @@ celery_app = Celery(
     backend=settings.redis_url,
     include=[
         "app.workers.document_tasks",
+        "app.workers.evaluation_tasks",
+        "app.workers.fine_tuning_tasks",
     ],
 )
 

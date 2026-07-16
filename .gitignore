@@ -1,68 +1,163 @@
-# Environment variables and secrets
+# ============================================================
+# Environment variables & secrets
+# ============================================================
 .env
 .env.*
 !.env.example
+
 secrets/
 credentials.json
+*.pem
+*.key
+*.crt
 
+# ============================================================
 # Python
+# ============================================================
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 .Python
+
 venv/
 .venv/
 env/
+
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.pytype/
+.tox/
+.nox/
+
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
 
-# Alembic temporary files
+# ============================================================
+# Logs
+# ============================================================
+logs/
 *.log
 
-# Node.js / Next.js
+# ============================================================
+# IDE
+# ============================================================
+.vscode/
+.idea/
+
+# ============================================================
+# Operating System
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Node / Next.js
+# ============================================================
 node_modules/
 .next/
-out/
 dist/
+build/
+out/
+
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# IDE
-.vscode/
-.idea/
+# ============================================================
+# Docker
+# ============================================================
+docker-compose.override.yml
 
-# Operating system
-.DS_Store
-Thumbs.db
+# ============================================================
+# Alembic
+# ============================================================
+*.pyc
+*.pyo
 
-# Runtime logs
-logs/
-*.log
+# ============================================================
+# Local Storage
+# ============================================================
+# Local storage
+storage/*
+!storage/.gitkeep
+!storage/documents/
+!storage/documents/.gitkeep
+!storage/temp/
+!storage/temp/.gitkeep
 
-# Uploaded documents and local storage
-storage/
 uploads/
 
-# ML artifacts and model weights
+# ============================================================
+# ML Artifacts
+# ============================================================
 ml/artifacts/*
 !ml/artifacts/.gitkeep
+
 *.bin
-*.safetensors
 *.pt
 *.pth
 *.onnx
+*.ckpt
 
-# Local databases
+# HuggingFace cache
+.huggingface/
+hf_cache/
+
+# SentenceTransformer cache
+sentence_transformers/
+
+# ============================================================
+# Vector Databases
+# ============================================================
+qdrant_storage/
+vectorstore/
+faiss_index/
+chroma/
+
+# ============================================================
+# Local Databases
+# ============================================================
 *.db
 *.sqlite
 *.sqlite3
 
-# Testing and generated reports
-coverage.xml
-junit.xml
+# ============================================================
+# Temporary Files
+# ============================================================
+tmp/
+temp/
+.cache/
+
+# ============================================================
+# Test Reports
+# ============================================================
 test-results/
+junit.xml
+
+# ============================================================
+# Jupyter
+# ============================================================
+.ipynb_checkpoints/
+
+# ============================================================
+# VSCode Test History
+# ============================================================
+.history/
+
+# ============================================================
+# Generated Documents
+# ============================================================
+generated/
+exports/
+
+# ============================================================
+# Misc
+# ============================================================
+*.swp
+*.swo
+*~

@@ -104,8 +104,15 @@ services:
       REDIS_URL: redis://redis:6379/0
       QDRANT_URL: http://qdrant:6333
 
+      LOCAL_STORAGE_PATH: /app/storage
+      DOCUMENTS_STORAGE_PATH: /app/storage/documents
+      TEMPORARY_STORAGE_PATH: /app/storage/temp
+
     ports:
       - "${API_PORT:-8000}:8000"
+
+    volumes:
+      - ./apps/api/storage:/app/storage
 
     depends_on:
       postgres:
@@ -126,7 +133,58 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 30s
+
+    networks:
+      - nexusai-network
+
+
+  worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+
+    container_name: nexusai-worker
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+
+      DATABASE_URL: >-
+        postgresql+psycopg2://${POSTGRES_USER:-nexusai}:${POSTGRES_PASSWORD:-nexusai_dev_password}@postgres:5432/${POSTGRES_DB:-nexusai}
+
+      REDIS_URL: redis://redis:6379/0
+      QDRANT_URL: http://qdrant:6333
+
+      LOCAL_STORAGE_PATH: /app/storage
+      DOCUMENTS_STORAGE_PATH: /app/storage/documents
+      TEMPORARY_STORAGE_PATH: /app/storage/temp
+
+    command:
+      [
+        "celery",
+        "-A",
+        "app.workers.celery_app.celery_app",
+        "worker",
+        "--loglevel=INFO",
+        "--pool=solo"
+      ]
+
+    volumes:
+      - ./apps/api/storage:/app/storage
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+      redis:
+        condition: service_healthy
+
+      qdrant:
+        condition: service_healthy
 
     networks:
       - nexusai-network

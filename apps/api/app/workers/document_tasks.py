@@ -225,7 +225,7 @@ def process_document_task(
                     knowledge_base.id
                 ),
                 "project_id": str(project.id),
-                "filename": (
+                "document_filename": (
                     document.original_filename
                 ),
             },
